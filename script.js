@@ -1,8 +1,5 @@
 // 이름이 다 다른경우에만 돌아감
 
-// 2d array형태로 넣어줘야 하는듯
-var globalMessageArray = [];
-
 // 주요 로직 -- create messagearray object
 // output is object (data source of truth)
 const kakaoRoomObject = function (txtString) {
@@ -26,10 +23,19 @@ const kakaoRoomObject = function (txtString) {
   const messageToObject = function (messageString) {
     const dateString = messageString.split(/,/)[0];
     const date = dateToString(messageString.split(/,/)[0]);
+    const yearMonth =
+      date.getFullYear().toString().slice(-2) +
+      "-" +
+      ("0" + (date.getMonth() + 1)).slice(-2);
+
+    const year = date.getFullYear().toString().slice(-2);
+    const month = ("0" + (date.getMonth() + 1)).slice(-2);
     // conver to date
     const name = messageString.match(/, (.*?) : /)[1];
     const content = messageString.split(/ : /).slice(1).join(" : ");
-    return { date, name, content };
+    const count = 1;
+
+    return { name, date, yearMonth, year, month, content, count };
   };
 
   const inOutToObject = function (messageString) {
@@ -57,7 +63,7 @@ const kakaoRoomObject = function (txtString) {
     }
   };
 
-  ///////////////////////// start////
+  ///////////////////////// start//////////
 
   const my_array = txtString
     .split(
@@ -66,6 +72,9 @@ const kakaoRoomObject = function (txtString) {
     .filter((item) => item.length > 18) //날짜만 있는 항목 지우기
     .filter(
       (item) => !item.includes("채팅방 관리자가 메시지를 가렸습니다.") //분석에 불필요함
+    )
+    .filter(
+      (item) => !item.includes("님을 초대했습니다.") //분석에 불필요함
     );
   const savedDate = dateToString(
     my_array[0].split(/(?=저장한 날짜 : (.*?)\n\n)/)[1]
@@ -85,15 +94,17 @@ const kakaoRoomObject = function (txtString) {
   // 2022년 5월 29일 오후 9:05 -> date object
   const enterItems = items
     .filter((item) => /님이 들어왔습니다.(\r\n|\n운영정책을 위반한)/.test(item))
-    .map((item) => inOutToObject(item)); // 입장내역
+    .map((item) => inOutToObject(item)) // 입장내역
+    .filter(Boolean);
 
   const exitItems = items
     // .filter((item) => item.includes("님이 나갔습니다.\r\n"))
     .filter((item) =>
       /(님이 나갔습니다.\r\n|님을 내보냈습니다.\r\n)/.test(item)
     )
+    .map((item) => inOutToObject(item)) // 퇴장내역
+    .filter(Boolean); // 오류 방지를 위해 undefined 없애주기
 
-    .map((item) => inOutToObject(item)); // 퇴장내역
   const messageItems = items
     .filter(
       (item) =>
@@ -106,11 +117,9 @@ const kakaoRoomObject = function (txtString) {
 
   /// 일단 입출입기록으로 user list
   const userListFromIn = [
-    ...new Set(enterItems.filter(Boolean).map((item) => item.name)), //.filter( Boolean ) filters undefined
+    ...new Set(enterItems.map((item) => item.name)), //.filter( Boolean ) filters undefined
   ];
-  const userListFromOut = [
-    ...new Set(exitItems.filter(Boolean).map((item) => item.name)),
-  ];
+  const userListFromOut = [...new Set(exitItems.map((item) => item.name))];
 
   // 그다음 message list
   const userListFromMessage = [
@@ -125,7 +134,6 @@ const kakaoRoomObject = function (txtString) {
 
   let users = [];
   targetUsers.forEach((userName) => {
-    console.log(userName);
     let joinedDate, joinedBeforeFirst;
 
     if (enterItems.find((item) => item.name == userName) == undefined) {
@@ -141,9 +149,16 @@ const kakaoRoomObject = function (txtString) {
         ? false
         : exitItems.find((item) => item.name == userName).date;
     messages = messageItems.filter((item) => item.name == userName);
-    console.log({ joinedDate, joinedBeforeFirst, exitDate, messages });
+    users.push({ userName, joinedDate, joinedBeforeFirst, exitDate, messages });
   });
-
+  console.log({
+    savedDate,
+    roomTitle,
+    firstDate,
+    lastDate,
+    users,
+    messageItems,
+  });
   return {
     savedDate,
     roomTitle,
@@ -161,16 +176,3 @@ const kakaoRoomObject = function (txtString) {
 // class MessageVisualizer
 // 아니면 kakaoMessageArray를 object로 만들어버리는 것도 가능
 // class 같은 추상화를 원하는 이유 : encapsulation (그 기능을 하는 것은 그 scope안에서만 해결)
-
-class ClassMates {
-  constructor(name, age) {
-    this.name = name;
-    this.age = age;
-  }
-  displayInfo() {
-    return this.name + "is " + this.age + " years old!";
-  }
-}
-
-let classmate = new ClassMates("Mike Will", 15);
-console.log(classmate);

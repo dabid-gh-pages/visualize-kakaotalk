@@ -31,11 +31,84 @@ async function loadTable(twoDimensionalArray, table) {
 
 // the ta
 async function createMonthlyTable(kakaoRoomObject, table) {
-  function processData(object) {
-    return [[1]];
+  function overrideTemplate(templateArray, inputArray, key) {
+    const deepCopy = (obj) => JSON.parse(JSON.stringify(obj));
+    copiedTemplateArray = deepCopy(templateArray);
+    var hash = Object.create(null);
+    copiedTemplateArray.forEach((obj) => (hash[obj[key]] = obj));
+    inputArray.forEach((obj) => Object.assign(hash[obj[key]], obj));
+    return copiedTemplateArray;
   }
+  const groupSumBy = (data, key, valueKey) =>
+    data
+      .sort((a, b) => a[key].localeCompare(b[key]))
+      .reduce((total, currentValue) => {
+        const newTotal = total;
+        if (total.length && total[total.length - 1][key] === currentValue[key])
+          newTotal[total.length - 1] = {
+            ...total[total.length - 1],
+            ...currentValue,
+            [valueKey]:
+              parseInt(total[total.length - 1][valueKey]) +
+              parseInt(currentValue[valueKey]),
+          };
+        else newTotal[total.length] = currentValue;
+        return newTotal;
+      }, []);
 
-  const tableArray = processData(kakaoRoomObject);
+  function dateRange(startDate, endDate) {
+    var startYear = startDate.getFullYear();
+    var endYear = endDate.getFullYear();
+    var dates = [];
+
+    for (var i = startYear; i <= endYear; i++) {
+      var endMonth = i != endYear ? 11 : endDate.getMonth() - 1;
+      var startMon = i === startYear ? startDate.getMonth() - 1 : 0;
+      for (var j = startMon; j <= endMonth; j = j > 12 ? j % 12 || 11 : j + 1) {
+        console.log(j);
+        var month = j + 1;
+        var displayMonth = month < 10 ? "0" + month : month;
+        console.log(i);
+        dates.push(new Date(i, displayMonth, 1));
+      }
+    }
+
+    return dates;
+  }
+  const firstDate = kakaoRoomObject.firstDate;
+  const lastDate = kakaoRoomObject.lastDate;
+  // change date object to YY-MM년
+  const monthArray = dateRange(firstDate, lastDate).map(
+    (date) =>
+      date.getFullYear().toString().slice(-2) +
+      "-" +
+      ("0" + (date.getMonth() + 1)).slice(-2)
+  );
+  const templateArray = monthArray.map((yearMonth) => ({
+    yearMonth,
+    count: 0,
+  }));
+  const headers = ["유저", ...monthArray];
+  let rows = [];
+  //preprocess  messages so that we can 1) group by month, and 2) add count
+  //   processedUsers = kakaoRoomObject.users.map(user=>{})
+  kakaoRoomObject.users.forEach((user) => {
+    const groupedMessages = groupSumBy(user.messages, "yearMonth", "count").map(
+      (message) => ({ yearMonth: message.yearMonth, count: message.count })
+    );
+    const formattedMesages = overrideTemplate(
+      templateArray,
+      groupedMessages,
+      "yearMonth"
+    ).map((item) => item.count);
+    rows.push([user.userName, ...formattedMesages]);
+
+    // console.log(groupedMessages);
+  });
+  //   const rows = kakaoRoomObject.messageItems
+  //     .filter((item) => item.name == user)
+  //     .map((item) => Object.values(item));
+  const tableArray = [headers, ...rows];
   loadTable(tableArray, table);
 }
 
@@ -51,12 +124,14 @@ async function createWeeklyTable(kakaoRoomObject, table) {
 
 // the ta
 async function createUserTable(kakaoRoomObject, table) {
-  function processData(object) {
-    return [[1]];
-  }
-
-  const tableArray = processData(kakaoRoomObject);
-  loadTable(tableArray, table);
+  let user = "EJ/영어교육, 재테크";
+  const headers = Object.keys(kakaoRoomObject.messageItems[0]);
+  const rows = kakaoRoomObject.messageItems
+    // .filter((item) => item.name == user)
+    .map((item) => Object.values(item))
+    .slice(0, 1000);
+  const tableArray = [headers, ...rows];
+  //   loadTable(tableArray, table);
 }
 
 // async function loadIntoTable(objectArray, table) {
@@ -91,40 +166,3 @@ async function createUserTable(kakaoRoomObject, table) {
 //       tableBody.appendChild(rowElement);
 //     }
 //   }
-
-//export to csv (input is 2d array)
-const exportToCsv = function () {
-  /** Convert a 2D array into a CSV string
-   */
-  function arrayToCsv(data) {
-    return data
-      .map(
-        (row) =>
-          row
-            .map(String) // convert every value to String
-            .map((v) => v.replaceAll('"', '""')) // escape double colons
-            .map((v) => `"${v}"`) // quote it
-            .join(",") // comma-separated
-      )
-      .join("\r\n"); // rows starting on new lines
-  }
-
-  /** Download contents as a file
-   * Source: https://stackoverflow.com/questions/14964035/how-to-export-javascript-array-info-to-csv-on-client-side
-   */
-  function downloadBlob(content, filename, contentType) {
-    // Create a blob
-    var blob = new Blob([content], { type: contentType });
-    var url = URL.createObjectURL(blob);
-
-    // Create a link to download it
-    var pom = document.createElement("a");
-    pom.href = url;
-    pom.setAttribute("download", filename);
-    pom.click();
-  }
-  let csv = arrayToCsv(globalMessageArray);
-  console.log(globalMessageArray);
-  console.log(csv);
-  downloadBlob(csv, "export.csv", "text/csv;charset=utf-8;");
-};

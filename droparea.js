@@ -4,7 +4,7 @@ const dropArea = document.querySelector(".drag-area"),
   button = dropArea.querySelector("button"),
   input = dropArea.querySelector("input");
 let file; //this is a global variable and we'll use it inside multiple functions
-let globalRoomObject;
+let globalRoomObject; //global variable where we can reference it throughout the files
 button.onclick = () => {
   input.click(); //if user click on the button then the input also clicked
 };
@@ -17,14 +17,8 @@ input.addEventListener("change", function () {
 //If user Drag File Over DropArea
 dropArea.addEventListener("dragover", (event) => {
   event.preventDefault(); //preventing from default behaviour
-  dropArea.classList.add("active");
-  dragText.textContent = "Release to Upload File";
 });
 //If user leave dragged File from DropArea
-dropArea.addEventListener("dragleave", () => {
-  dropArea.classList.remove("active");
-  dragText.textContent = "Drag & Drop to Upload File";
-});
 //If user drop File on DropArea
 dropArea.addEventListener("drop", (event) => {
   event.preventDefault(); //preventing from default behaviour
@@ -35,7 +29,8 @@ dropArea.addEventListener("drop", (event) => {
 
 function showFile() {
   let fileType = file.type; //getting selected file type
-  let validExtensions = ["message/rfc822"]; //adding some valid image extensions in array
+  console.log(fileType);
+  let validExtensions = ["message/rfc822", ""]; //adding some valid image extensions in array
   if (validExtensions.includes(fileType)) {
     let fileReader = new FileReader(); //creating new FileReader object
     // readAsText를 실행했을 때 읽기 시작하고, 모두 다 load한 후  onload가 callback으로 실행됨

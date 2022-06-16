@@ -1,4 +1,57 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+
+:root {
+  --colors-white: #ffffff;
+  --colors-whiteA100: #ffffffff;
+  --colors-whiteA050: #ffffff80;
+  --colors-whiteA000: #ffffff00;
+  --colors-gray900: #464d52;
+  --colors-gray800: #5a5a5a;
+  --colors-gray700: #868686;
+  --colors-gray600: #999999;
+  --colors-gray500: #c3c3c3;
+  --colors-gray400: #d8d8d8;
+  --colors-gray300: #ececec;
+  --colors-gray200: #f2f4f6;
+  --colors-gray100: #f5f5f5;
+  --colors-grayA100: #d8d8d8ff;
+  --colors-grayA050: #d8d8d850;
+  --colors-grayA000: #d8d8d800;
+  --colors-gray900rgb: 70, 77, 82;
+  --colors-blue500: #5673eb;
+  --colors-blue400: #95a7ee;
+  --colors-blue300: #cad3f8;
+  --colors-blue200: #d5dbf3;
+  --colors-blue100: #eff2ff;
+  --colors-blueA100: #5673ebff;
+  --colors-blueA050: #5673eb50;
+  --colors-blueA000: #5673eb00;
+  --colors-red500: #eb5374;
+  --colors-red200: #ffd5de;
+  --colors-red100: #fdeaee;
+  --colors-sky500: #4a9ae5;
+  --colors-sky100: #e8f2fc;
+  --colors-pink500: #bf2e70;
+  --colors-pink100: #f7e5ed;
+  --colors-gold500: #cb9110;
+  --colors-gold100: #fbf1d8;
+  --colors-background: #ffffff;
+  --colors-mobileBackground: #f3f4f5;
+  --colors-mapStroke: #ffffff;
+  --colors-mapLabelBackground: #ffffff;
+  --colors-shadowBackground1: #ffffff;
+  --colors-shadowBackground2: #ffffff;
+  --colors-sectionBorder: #dedede;
+  --colors-subSectionBorder: #e5e5e5;
+  --colors-buttonBorder: #dcdcdc;
+  --colors-chartOptionBorder: transparent;
+  --colors-switchBackground: rgba(var(--colors-gray900rgb), 0.1);
+  --colors-switchThumbBackground: white;
+  --shadows-elevation1: rgb(0 0 0 / 4%) 0rem 0.125rem 0.625rem 0rem;
+  --shadows-elevation2: rgb(0 0 0 / 3%) -0.0625rem 0.0625rem 0.375rem 0rem;
+  --shadows-subSectionBoxShadow: rgb(0 0 0 / 8.5%) -0.0625rem 0.0625rem 1rem;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -10,45 +63,60 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #5256ad;
+  background: var(--colors-background);
   flex-wrap: wrap;
 }
-.drag-area {
-  border: 2px dashed #fff;
-  height: 500px;
-  width: 700px;
-  border-radius: 5px;
+
+.main-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  width: 100%;
+  max-width: 1000px;
+  margin: 1em auto;
+  padding: 1em;
+  gap: 1em;
 }
-.drag-area.active {
-  border: 2px solid #fff;
+
+section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 0.75rem;
+  border: 0.0625rem solid var(--colors-sectionBorder);
+  box-shadow: var(--shadows-elevation1);
+}
+
+/* 1파트 : drag-area
+==================================== */
+.drag-area {
+  height: 300px;
+  width: 100%;
 }
 .drag-area .icon {
   font-size: 100px;
-  color: #fff;
+  color: #6b6d6b;
 }
 .drag-area header {
   font-size: 30px;
   font-weight: 500;
-  color: #fff;
+  color: #6b6d6b;
 }
 .drag-area span {
   font-size: 25px;
   font-weight: 500;
-  color: #fff;
+  color: #6b6d6b;
   margin: 10px 0 15px 0;
 }
 
-.drag-area img {
-  height: 100%;
+/* 2파트 : overviw-area
+==================================== */
+.overview-area {
+  padding: 1em;
   width: 100%;
-  object-fit: cover;
-  border-radius: 5px;
 }
-
 /* Buttons
 ==================================== */
 button {
@@ -57,26 +125,54 @@ button {
   font-weight: 500;
   border: none;
   outline: none;
-  background: #fff;
-  color: #5256ad;
   border-radius: 5px;
   cursor: pointer;
+  background: var(--colors-shadowBackground1);
+  box-shadow: var(--shadows-elevation2);
+  border: 0.0625rem solid var(--colors-buttonBorder);
 }
-
-/* 
- * css for the table component
- */
 
 .break {
   display: flex;
   flex-basis: 100%;
   height: 0;
 }
-.flex-container {
-  display: flex;
+
+/* Table
+==================================== */
+
+table {
+  table-layout: fixed;
+  width: 100%;
+  *margin-left: -100px; /*ie7*/
+}
+td,
+th {
+  text-align: right;
+  vertical-align: middle;
+  border-top: 1px solid #ccc;
+  padding: 10px;
+  width: 100px;
+}
+.fix {
+  position: absolute;
+  *position: relative; /*ie7*/
+  margin-left: -100px;
+  width: 100px;
+}
+.outer {
+  position: relative;
+  padding: 10px;
+}
+.inner {
+  overflow-x: scroll;
+  overflow-y: scroll;
+  width: 800px;
+  height: 800px;
 }
 
-.table {
+/* 
+table {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-collapse: collapse;
   font-family: "Quicksand" sans-serif;
@@ -84,22 +180,22 @@ button {
   font-weight: bold;
 }
 
-.table thead th {
+table thead th {
   background-color: #009578;
   color: #ffffff;
   text-align: left;
 }
 
-.table th,
-.table td {
+table th,
+table td {
   padding: 10px 20px;
 }
 
-.table tbody tr:nth-of-type(even) {
+table tbody tr:nth-of-type(even) {
   background-color: #eeeeee;
 }
 
-.table tbody tr:last-of-type {
+table tbody tr:last-of-type {
   border-bottom: 2px solid #009578;
 }
 
@@ -115,4 +211,4 @@ tr {
   width: 100%;
   padding-left: 15px;
   padding-right: 15px;
-}
+} */
