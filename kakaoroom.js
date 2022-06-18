@@ -90,7 +90,12 @@ const kakaoRoomObject = function (txtString) {
     my_array[0].split(/(?=저장한 날짜 : (.*?)\n\n)/)[1]
   ); // 내보내기 일자
 
-  const roomTitle = my_array[0].split(" 님과 카카오톡 대화")[0].slice(0); // 방제목
+  const roomTitle = my_array[0]
+    .split("카카오톡 대화")[0]
+    .slice(0)
+    .replace(" 님과 ", ""); // 방제목
+
+  // 방 제목에서 가장 뒤에 있는 숫자조합은 현재 인원수로 빼도 될 것 같음
 
   const items = my_array.slice(1);
   // items는  1) 입장 item, 2) 퇴장 아이템, 3) 메시지 아이템 3가지로 나뉨
