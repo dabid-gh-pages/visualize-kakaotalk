@@ -46,19 +46,29 @@ function showFile() {
     fileReader.onload = (e) => {
       globalRoomObject = kakaoRoomObject(e.target.result);
       console.log(globalRoomObject);
-      getWordCloudArray(globalRoomObject.messageItems); //
+      const wordCloudArray = getWordCloudArray(globalRoomObject.messageItems); //
 
       //create summary section
       createSummarySection(
         globalRoomObject,
         document.querySelector("section.overview-area")
       );
+
+      //create wordcloud section
+      createWordCloudSection(
+        wordCloudArray,
+        document.querySelector("div.wordcloud-image")
+      );
+      //create table section
+
       createMonthlyTable(
         globalRoomObject,
         document.querySelector(".overview-table")
       );
       // show elements
       document.querySelector("section.overview-area").classList.toggle("show");
+      document.querySelector("section.wordcloud-area").classList.toggle("show");
+
       document.querySelector("section.table-area").classList.toggle("show");
     };
     fileReader.readAsText(file);

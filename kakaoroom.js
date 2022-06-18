@@ -370,13 +370,15 @@ const getWordCloudArray = function (messageItems) {
   for (const word of words) {
     counts[word] = counts[word] ? counts[word] + 1 : 1;
   }
+  console.log(counts);
+
   const wordArray = Object.entries(counts)
     .map((item) => ({ text: item[0], size: item[1] }))
     .sort((itemA, itemB) => itemB.size - itemA.size)
     .filter((item) => !removeWords.includes(item.text))
     .filter((item) => !/^\d/.test(item.text)) //remove anything that starts with a number
-    .filter((item) => !/^(https|www)/.test(item.text)); //remove url
-
-  console.log(wordArray.map((item) => item.text));
-  return wordArray;
+    .filter((item) => !/^(https|www)/.test(item.text)) //remove url
+    .filter((item, idx) => idx < 100); // 100까지의  숫자만 가져오기
+  console.log(wordArray);
+  return wordArray; //get only most frequent 100 entries
 };

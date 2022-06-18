@@ -134,7 +134,7 @@ div.heading {
 ==================================== */
 .table-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin-bottom: 30px;
   flex-direction: row;
 }
@@ -250,4 +250,34 @@ tr > td:first-child {
 }
 tr > th:first-child {
   text-align: center;
+}
+
+/* WordCloud
+==================================== */
+
+.legend {
+  font-size: 0.8em;
+  margin: 10px;
+  padding: 8px;
+}
+.bld {
+  font-weight: bold;
+}
+
+.wordcloud-area {
+  opacity: 0;
+  transition: opacity 1.6s ease-in-out;
+}
+
+section.wordcloud-area.show {
+  opacity: 1;
+}
+
+.wordcloud-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  margin-top: 30px;
+  flex-direction: row;
+  align-items: baseline;
 }

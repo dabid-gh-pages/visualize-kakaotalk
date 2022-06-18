@@ -3,16 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Drag & Drop or Browse: File Upload | CodingNepal</title>
+    <title>카카오톡 분석기 - 대화방 정보를 한눈에</title>
     <link rel="stylesheet" href="styles.css" />
     <!-- SheetJS CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.14.3/xlsx.full.min.js"></script>
     <!-- FileSaver saveAs CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-    />
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script
+      src="https://rawgit.com/jasondavies/d3-cloud/master/build/d3.layout.cloud.js"
+      type="text/JavaScript"
+    ></script>
   </head>
   <body>
     <div class="main-wrapper">
@@ -20,7 +21,7 @@
         <div>       
           <h1>카카오톡 분석기</h1>
       </div>
-      <div> <h3> 단체방 정보를 한눈에</h3></div>
+      <div> <h3> 대화방 정보를 한눈에</h3></div>
      
      
 
@@ -38,6 +39,14 @@
         <p></p>
         <a href="#" onclick="exportToExcel()">대화내용 엑셀로 내보내기</a>
       </section>
+      <section class="wordcloud-area">
+        <div class="wordcloud-header">
+          <h3>대화방 주요 키워드</h3>
+        </div>
+        <div class="wordcloud-image"></div>
+        <p class="legend">일반적으로 사용되는 단어는 더 크고 색상이 약간 흐려집니다. 덜 일반적인 단어는 더 작고 어둡습니다.</p>
+      </section>
+
       <section class="table-area outer">
         <div class="inner">
           <div class="table-header">
