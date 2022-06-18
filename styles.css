@@ -1,5 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
-
+@import url(//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css);
+@import url(//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-jp.css);
 :root {
   --colors-white: #ffffff;
   --colors-whiteA100: #ffffffff;
@@ -56,26 +56,16 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
-}
-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background: var(--colors-background);
-  flex-wrap: wrap;
+  font-family: "Spoqa Han Sans Neo", "Spoqa Han Sans JP", sans-serif;
 }
 
 .main-wrapper {
   display: flex;
-  align-items: center;
   justify-content: center;
   flex-direction: column;
   width: 100%;
-  max-width: 1000px;
-  margin: 1em auto;
-  padding: 1em;
+
+  padding: 2em;
   gap: 1em;
 }
 
@@ -89,10 +79,18 @@ section {
   box-shadow: var(--shadows-elevation1);
 }
 
+div.heading {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  margin: 10px;
+  gap: 20px;
+}
+
 /* 1파트 : drag-area
 ==================================== */
 .drag-area {
-  height: 300px;
+  height: 200px;
   width: 100%;
 }
 .drag-area .icon {
@@ -114,9 +112,83 @@ section {
 /* 2파트 : overviw-area
 ==================================== */
 .overview-area {
+  gap: 10px;
+  align-items: left;
+  justify-content: center;
   padding: 1em;
   width: 100%;
+  opacity: 0;
+  transition: opacity 1.6s ease-in-out;
 }
+
+.overview-area p {
+  font-size: 1.25rem;
+  margin-bottom: 10px;
+}
+
+.overview-area a {
+  color: inherit;
+}
+
+/* 3파트 : table-area
+==================================== */
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  flex-direction: row;
+}
+
+.table-area {
+  opacity: 0;
+  transition: opacity 1.6s ease-in-out;
+}
+/* loader
+==================================== */
+
+.show {
+  opacity: 1;
+}
+
+/* loader
+==================================== */
+
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border: 8px solid #fed;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #fed transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 /* Buttons
 ==================================== */
 button {
@@ -167,48 +239,15 @@ th {
 .inner {
   overflow-x: scroll;
   overflow-y: scroll;
-  width: 800px;
-  height: 800px;
-}
-
-/* 
-table {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border-collapse: collapse;
-  font-family: "Quicksand" sans-serif;
-  overflow: hidden;
-  font-weight: bold;
-}
-
-table thead th {
-  background-color: #009578;
-  color: #ffffff;
-  text-align: left;
-}
-
-table th,
-table td {
-  padding: 10px 20px;
-}
-
-table tbody tr:nth-of-type(even) {
-  background-color: #eeeeee;
-}
-
-table tbody tr:last-of-type {
-  border-bottom: 2px solid #009578;
-}
-
-tr {
-  display: flex;
-  display: -webkit-flex;
-  flex-direction: row;
-  -webkit-flex-direction: row;
-  flex-grow: 0;
-  -webkit-flex-grow: 0;
-  flex-wrap: wrap;
-  -webkit-flex-wrap: wrap;
   width: 100%;
-  padding-left: 15px;
-  padding-right: 15px;
-} */
+  height: 800px;
+  /* width: 800px;
+   */
+}
+
+tr > td:first-child {
+  text-align: center;
+}
+tr > th:first-child {
+  text-align: center;
+}

@@ -1,18 +1,19 @@
 //selecting all required elements
-const dropArea = document.querySelector(".drag-area"),
-  dragText = dropArea.querySelector("header"),
-  button = dropArea.querySelector("button"),
-  input = dropArea.querySelector("input");
+let dropArea = document.querySelector(".drag-area");
+const uploadButton = dropArea.querySelector(".upload-button");
+const input = dropArea.querySelector("input");
+
 let file; //this is a global variable and we'll use it inside multiple functions
 let globalRoomObject; //global variable where we can reference it throughout the files
-button.onclick = () => {
+
+uploadButton.onclick = () => {
   input.click(); //if user click on the button then the input also clicked
 };
 input.addEventListener("change", function () {
   //getting user select file and [0] this means if user select multiple files then we'll select only the first one
   file = this.files[0];
   dropArea.classList.add("active");
-  showFile(); //calling function
+  startWork(); //calling function
 });
 //If user Drag File Over DropArea
 dropArea.addEventListener("dragover", (event) => {
@@ -24,10 +25,18 @@ dropArea.addEventListener("drop", (event) => {
   event.preventDefault(); //preventing from default behaviour
   //getting user select file and [0] this means if user select multiple files then we'll select only the first one
   file = event.dataTransfer.files[0];
-  showFile(); //calling function
+  startWork(); //calling function
 });
 
+function startWork() {
+  dropArea.innerHTML =
+    '<div class="lds-ring"><div></div><div></div><div></div><div></div></div>';
+  setTimeout(showFile, 3000);
+}
+
 function showFile() {
+  document.querySelector(".drag-area").style.display = "none";
+
   let fileType = file.type; //getting selected file type
   console.log(fileType);
   let validExtensions = ["message/rfc822", ""]; //adding some valid image extensions in array
@@ -37,11 +46,20 @@ function showFile() {
     fileReader.onload = (e) => {
       globalRoomObject = kakaoRoomObject(e.target.result);
       console.log(globalRoomObject);
+      getWordCloudArray(globalRoomObject.messageItems); //
+
+      //create summary section
+      createSummarySection(
+        globalRoomObject,
+        document.querySelector("section.overview-area")
+      );
       createMonthlyTable(
         globalRoomObject,
         document.querySelector(".overview-table")
       );
-      createUserTable(globalRoomObject, document.querySelector(".user-table"));
+      // show elements
+      document.querySelector("section.overview-area").classList.toggle("show");
+      document.querySelector("section.table-area").classList.toggle("show");
     };
     fileReader.readAsText(file);
   } else {
@@ -49,6 +67,5 @@ function showFile() {
       "카카오톡 메시지 형식이 아닙니다. eml 파일이 맞는지 다시 확인해주세요"
     );
     dropArea.classList.remove("active");
-    dragText.textContent = "Drag & Drop to Upload File";
   }
 }

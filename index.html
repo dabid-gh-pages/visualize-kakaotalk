@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Drag & Drop or Browse: File Upload | CodingNepal</title>
     <link rel="stylesheet" href="styles.css" />
-
+    <!-- SheetJS CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.14.3/xlsx.full.min.js"></script>
+    <!-- FileSaver saveAs CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
@@ -13,18 +16,33 @@
   </head>
   <body>
     <div class="main-wrapper">
+      <div class="heading">
+        <div>       
+          <h1>카카오톡 분석기</h1>
+      </div>
+      <div> <h3> 단체방 정보를 한눈에</h3></div>
+     
+     
+
+
+    </div>
       <section class="drag-area">
-        <header>Drag File </header>
-        <span>OR</span>
-        <button>Browse File</button>
+        <header>드래그 드롭하기 </header>
+        <span>또는</span>
+        <button class="upload-button">파일 불러오기</button>
         <input type="file" hidden />
       </section>
       <section class="overview-area">
-        <button onclick="exportToCsv()">export to CSV</button>
-        <input type="file" hidden />
+        <p></p>
+        <p></p>
+        <p></p>
+        <a href="#" onclick="exportToExcel()">대화내용 엑셀로 내보내기</a>
       </section>
       <section class="table-area outer">
         <div class="inner">
+          <div class="table-header">
+            <h3>유저별 메시지 횟수 (연도-월)</h3>
+          </div>
         <table class="overview-table">
           <thead></thead>
           <tbody></tbody>
@@ -38,7 +56,7 @@
     </div>
     <script src="helpers.js"></script>
     <script src="droparea.js"></script>
-    <script src="script.js"></script>
+    <script src="kakaoroom.js"></script>
     <script src="exportcsv.js"></script>
 
   </body>

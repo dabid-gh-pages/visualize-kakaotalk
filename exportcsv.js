@@ -50,3 +50,45 @@ const exportToCsv = function () {
   let csv = arrayToCsv(twoDArray);
   downloadBlob(csv, "export.csv", "text/csv;charset=utf-8;");
 };
+
+const exportToExcel = function () {
+  let messageArray = globalRoomObject.messageItems.map((item) => ({
+    이름: item.name,
+    시간: item.date,
+    내용: item.content,
+  }));
+  var workSheet1 = XLSX.utils.json_to_sheet(messageArray);
+
+  var wscols = [
+    { width: 10 }, // first column
+    { width: 15 }, // second column
+    { width: 40 },
+  ];
+
+  workSheet1["!cols"] = wscols;
+
+  let users = globalRoomObject.users
+    .map((item) => ({
+      이름: item.userName,
+      입장일: item.joinedDate,
+      시작일_이전_입장: item.joinedBeforeFirst,
+      퇴장일: item.exitDate,
+      총_발신횟수: item.messages.length,
+    }))
+    .sort((userA, userB) => userB.총_발신횟수 - userA.총_발신횟수);
+  var workSheet2 = XLSX.utils.json_to_sheet(users);
+  var wscols = [
+    { width: 20 }, // first column
+    { width: 15 }, // second column
+    { width: 8 }, // second column
+    { width: 15 }, // second column
+    { width: 8 }, // second column
+  ];
+
+  workSheet2["!cols"] = wscols;
+  var wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, workSheet1, "messages");
+  XLSX.utils.book_append_sheet(wb, workSheet2, "users");
+
+  XLSX.writeFile(wb, "kakao.xlsx");
+};

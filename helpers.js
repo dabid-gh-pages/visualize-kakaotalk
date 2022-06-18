@@ -124,7 +124,6 @@ async function createWeeklyTable(kakaoRoomObject, table) {
 
 // the ta
 async function createUserTable(kakaoRoomObject, table) {
-  let user = "EJ/영어교육, 재테크";
   const headers = Object.keys(kakaoRoomObject.messageItems[0]);
   const rows = kakaoRoomObject.messageItems
     // .filter((item) => item.name == user)
@@ -134,35 +133,17 @@ async function createUserTable(kakaoRoomObject, table) {
   //   loadTable(tableArray, table);
 }
 
-// async function loadIntoTable(objectArray, table) {
-//     //objectArray to table
-//     const tableHead = table.querySelector("thead");
-//     const tableBody = table.querySelector("tbody");
+/**
+ * creating the summar section
+ */
 
-//     // convert array of object to 2d array
-//     const headers = Object.keys(objectArray[0]);
-//     const rows = objectArray.map((object) => Object.values(object));
+async function createSummarySection(kakaoRoomObject, sectionElement) {
+  const textArray = kakaoRoomObject.summaryText;
+  console.log(textArray);
+  console.log(sectionElement);
+  pElements = [...sectionElement.querySelectorAll("p")];
 
-//     // put the headers,rows as global variable
-//     globalMessageArray = [headers, ...rows];
-
-//     // Clear the table
-//     tableHead.innerHTML = "<tr></tr>";
-//     tableBody.innerHTML = "";
-//     // Populate the headers
-//     for (const headerText of headers) {
-//       const headerElement = document.createElement("th");
-//       headerElement.textContent = headerText;
-//       tableHead.querySelector("tr").appendChild(headerElement);
-//     }
-//     // Populate the rows
-//     for (const row of rows) {
-//       const rowElement = document.createElement("tr");
-//       for (const cellText of row) {
-//         const cellElement = document.createElement("td");
-//         cellElement.textContent = cellText;
-//         rowElement.appendChild(cellElement);
-//       }
-//       tableBody.appendChild(rowElement);
-//     }
-//   }
+  for (i = 0; i < pElements.length; i++) {
+    pElements[i].textContent = textArray[i];
+  }
+}
