@@ -73,7 +73,7 @@ const kakaoRoomObject = function (txtString) {
     }
   };
 
-  ///////////////////////// start//////////
+  ///////////////////////// start////////////////////////////
 
   const my_array = txtString
     .split(

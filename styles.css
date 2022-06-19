@@ -281,3 +281,23 @@ section.wordcloud-area.show {
   flex-direction: row;
   align-items: baseline;
 }
+
+/* Footer
+==================================== */
+.footer {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  color: black;
+  text-align: center;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+i:hover {
+  color: #aec6cf;
+  transition: 0.4s;
+  cursor: pointer;
+}
