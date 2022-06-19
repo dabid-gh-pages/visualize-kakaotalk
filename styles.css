@@ -296,6 +296,13 @@ section.wordcloud-area.show {
   padding-right: 10px;
 }
 
+i {
+  color: black;
+}
+.footer p {
+  margin-top: 10px;
+  font-size: 0.7rem;
+}
 i:hover {
   color: #aec6cf;
   transition: 0.4s;
