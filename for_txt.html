@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>카카오톡 txt 대화내용 정리</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .dropzone {
+      border: 2px dashed #ccc;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+    .dropzone.dragover { border-color: #007bff; }
+    table {
+      width: 100%; border-collapse: collapse; margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th { background-color: #f4f4f4; }
+    th:nth-child(1) { width: 20%; }
+    th:nth-child(2) { width: 30%; }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:disabled { background-color: #ccc; }
+  </style>
+</head>
+
+<body>
+  <h1>카카오톡 txt 대화내용 정리</h1>
+  <div id="dropzone" class="dropzone">.txt 파일을 여기로 드래그 해주세요</div>
+  <div id="result"></div>
+
+  <script>
+    document.getElementById('dropzone').addEventListener('dragover', function (e) {
+      e.preventDefault();
+      e.target.classList.add('dragover');
+    });
+
+    document.getElementById('dropzone').addEventListener('dragleave', function (e) {
+      e.target.classList.remove('dragover');
+    });
+
+    document.getElementById('dropzone').addEventListener('drop', function (e) {
+      e.preventDefault();
+      e.target.classList.remove('dragover');
+
+      const file = e.dataTransfer.files[0];
+      if (file && file.name.endsWith('.txt')) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          const content = event.target.result;
+          const parsedData = parseTxtFile(content);
+          displayTable(parsedData);
+        };
+        reader.readAsText(file);
+      } else {
+        alert('유효한 .txt 파일을 올려주세요.');
+      }
+    });
+
+    function parseTxtFile(content) {
+      const lines = content.split('\n');
+      const parsed = [];
+      const datetimePattern = /^(\d{4})년 (\d{1,2})월 (\d{1,2})일 (오전|오후) (\d{1,2}):(\d{2})/;
+      const fullLinePattern = /^(\d{4}년 .+?), (.+?) : (.+)$/;
+
+      let currentMessage = null;
+
+      lines.forEach(line => {
+        const fullMatch = fullLinePattern.exec(line);
+        if (fullMatch) {
+          if (currentMessage) parsed.push(currentMessage);
+
+          const [_, datetimeRaw, sender, content] = fullMatch;
+          const datetimeMatch = datetimePattern.exec(datetimeRaw);
+          if (datetimeMatch) {
+            const [__, y, m, d, ampm, h, min] = datetimeMatch;
+            const hour = (ampm === '오후') ? (parseInt(h) % 12 + 12) : parseInt(h) % 12;
+            const datetime = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')} ${hour.toString().padStart(2, '0')}:${min}`;
+            currentMessage = { datetime, sender, content };
+          }
+        } else if (datetimePattern.test(line)) {
+          if (currentMessage) parsed.push(currentMessage);
+          currentMessage = null; // 날짜만 있는 라인은 무시
+        } else if (currentMessage) {
+          currentMessage.content += '\n' + line.trim();
+        }
+      });
+
+      if (currentMessage) parsed.push(currentMessage);
+      return parsed;
+    }
+
+    function displayTable(data) {
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '';
+
+      if (data.length === 0) {
+        resultDiv.textContent = '대화 내용이 없습니다.';
+        return;
+      }
+
+      const table = document.createElement('table');
+      const thead = document.createElement('thead');
+      const tbody = document.createElement('tbody');
+
+      const headers = ['Datetime', 'Sender', 'Content'];
+      const headerRow = document.createElement('tr');
+      headers.forEach(header => {
+        const th = document.createElement('th');
+        th.textContent = header;
+        headerRow.appendChild(th);
+      });
+
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+
+      data.forEach(row => {
+        const tr = document.createElement('tr');
+        [row.datetime, row.sender, row.content].forEach(value => {
+          const td = document.createElement('td');
+          td.textContent = value;
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+
+      table.appendChild(tbody);
+      resultDiv.appendChild(table);
+    }
+  </script>
+</body>
+
+</html>
